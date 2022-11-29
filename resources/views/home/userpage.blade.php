@@ -51,9 +51,9 @@
         <div>
             <form action="{{url('add_comment')}}" method="POST" style="text-align:center">
             @csrf
-                <textarea name="comment"style="height:150px;width:600px"placeholder="write something here"></textarea>
+                <textarea name="comment" style="height:150px;width:600px" placeholder="write something here"></textarea>
                 <br>
-                <input style="text-align:center" type="submit"value="Comment">
+                <input style="text-align:center" type="submit" value="Comment">
             </form>
             <div style="padding-left:300px;padding-bottom:30px">
             <p style="font-weight:bold">All Comments</p>
