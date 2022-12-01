@@ -2,19 +2,27 @@
          <div class="container">
             <div class="heading_container heading_center">
 
-               <h2>
-                  Our <span>products</span>
-               </h2>
+
             </div>
+            @if(session()->has('message'))
+                    <div class="alert alert-success">
+                   {{session()->get('message')}}
+
+                    </div>
+                    @endif
+
             <br><br>
+
                 <div>
-                     <form action="{{url('product_search')}}" method="GET">
+                     <form action="{{url('search_product')}}" method="GET">
                          @csrf
                         <input type="text"  name="search" placeholder="Search here">
                         <input type="submit" class="btn btn-primary" value="Search">
                     </form>
 
                 </div>
+
+
             <div class="row">
                 @foreach($product as $products)
                <div class="col-sm-6 col-md-4 col-lg-4">

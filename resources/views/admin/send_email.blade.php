@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
 
-    <base href="/public">
+        <base href="/product">
     <!-- Required meta tags -->
     @include('admin.css')
     <style>

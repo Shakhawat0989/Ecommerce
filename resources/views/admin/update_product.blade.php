@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <base href="/public">
+     <base href="/product">
     <!-- Required meta tags -->
     @include('admin.css')
     <style>
@@ -18,7 +18,7 @@
         }
         labal{
             display:inline-block;
-            width:200px;
+            width:300px;
         }
         .div_design{
             padding-top:20px;
@@ -45,7 +45,7 @@
                 </div>
             @endif
             <div class="center">
-                <h1 class="font_size">Add Product</h1>
+                <h1 class="font_size">Update Product</h1>
             </div>
         <form action="{{url('/update_product_confirm',$product->id)}}" method="POST" enctype="multipart/form-data">
             @csrf

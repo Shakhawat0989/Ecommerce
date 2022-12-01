@@ -13,6 +13,7 @@ use Session;
 use Stripe;
 use App\Models\Comment;
 use App\Models\Reply;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class HomeController extends Controller
 {
@@ -71,31 +72,61 @@ class HomeController extends Controller
    public function add_cart(Request $request,$id){
         if(Auth::id()){
             $user=Auth::user();
+            $userid=$user->id;
             $product=product::find($id);
 
-           $cart=new cart;
+            $product_exist_id=cart::where('product_id','=',$id)->where('user_id','=',$userid)->get('id')->first();
 
-           $cart->name=$user->name;
-           $cart->email=$user->email;
-           $cart->phone=$user->phone;
-           $cart->address=$user->address;
-           $cart->user_id=$user->id;
+            if($product_exist_id){
 
-            $cart->product_title=$product->title;
-            $cart->image=$product->image;
-            if($product->discount_price!=null){
-                $cart->price=$product->discount_price*$request->quantity;
+                $cart=cart::find($product_exist_id)->first();
+                $quantity=$cart->quantity;
+                $cart->quantity=$quantity + $request->quantity;
+
+                 if($product->discount_price!=null){
+                    $cart->price=$product->discount_price*$cart->quantity;
+                }
+                else{
+                    $cart->price=$product->price*$cart->quantity;
+                }
+
+                $cart->save();
+
+                Alert::success('Product Added Successfully','We have added product to the cart');
+
+                return redirect()->back()->with('message','Product Added Successfully');
+
             }
             else{
-                $cart->price=$product->price*$request->quantity;
+                $cart=new cart;
+
+                $cart->name=$user->name;
+                $cart->email=$user->email;
+                $cart->phone=$user->phone;
+                $cart->address=$user->address;
+                $cart->user_id=$user->id;
+
+                $cart->product_title=$product->title;
+                $cart->image=$product->image;
+                if($product->discount_price!=null){
+                    $cart->price=$product->discount_price*$request->quantity;
+                }
+                else{
+                    $cart->price=$product->price*$request->quantity;
+                }
+
+                $cart->product_id=$product->id;
+                $cart->quantity=$request->quantity;
+
+                $cart->save();
+
+
+
+                return redirect()->back()->with('message','Product Added Successfully');
+
             }
 
-            $cart->product_id=$product->id;
-            $cart->quantity=$request->quantity;
 
-            $cart->save();
-
-            return redirect()->back();
 
 
         }
@@ -290,6 +321,29 @@ class HomeController extends Controller
 
        $product=product::where('title','LIKE',"%$search_text%")->orwhere('catagory','LIKE',"$search_text")->paginate(10);
        return view('home.userpage',compact('product','comment','reply'));
+
+    }
+
+
+    public function products(){
+
+        $product=Product::paginate(10);
+        $comment=comment::orderby('id','desc')->get();
+        $reply=reply::all();
+
+
+        return view('home.product_view',compact('product','comment','reply'));
+    }
+
+    public function search_product(Request $request){
+
+         $comment=comment::orderby('id','desc')->get();
+        $reply=reply::all();
+
+         $search_text=$request->search;
+
+       $product=product::where('title','LIKE',"%$search_text%")->orwhere('catagory','LIKE',"$search_text")->paginate(10);
+       return view('home.product_view',compact('product','comment','reply'));
 
     }
 }
